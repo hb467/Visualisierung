@@ -1,0 +1,51 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Erstelle den Plot
+fig, ax = plt.subplots(figsize=(10, 3))
+
+# Horizontale Linie in der Mitte Dossschienen
+ax.axhline(y=0.3, color='lightgrey', linewidth=8)
+
+# Hintergrundlinien (12 Linien, 13 Felder, inklusive der zusätzlichen Linie bei x=0)
+anzahl_hintergrundlinien = 12
+x_hintergrund = np.linspace(0, 12, anzahl_hintergrundlinien + 1)  # Positionen der Hintergrundlinien
+
+for x in x_hintergrund:
+    ax.axvline(x, ymin=0, ymax=1, color='lightgrey', linestyle='-', linewidth=1)
+
+# Vertikale Zurrschienen (eine dicke Linie pro Feld, zentral in jedem Feld)
+anzahl_felder = 12
+x_positionen = np.linspace(0.5, 11.5, anzahl_felder)  # Mittig in jedem Feld
+
+for x in x_positionen:
+    ax.vlines(x, ymin=0.4, ymax=1, colors='lightgrey', linewidth=8)  # Von oben bis knapp über der Mitte
+
+
+ax.spines['top'].set_color('black')
+ax.spines['bottom'].set_color('black')
+ax.spines['left'].set_color('black')
+ax.spines['right'].set_color('black')
+
+# Beschriftungen unter jedem Feld 
+feldnamen = [f"F{i}" for i in range(12, 0, -1)]  # F12 bis F1
+x_felder = np.linspace(0.5, 11.5, anzahl_felder)  # Mittige Positionen der Felder
+
+for x, name in zip(x_felder, feldnamen):
+    plt.text(x, -0.1, name, ha='center', va='center', fontsize=10, transform=ax.transData)
+
+# Zusätzliche Beschriftungen oben
+plt.text(0, 1.05, "hinten", ha='left', va='center', fontsize=10, transform=ax.transAxes)
+plt.text(0.5, 1.05, "Fehlerposition Innendeckschicht", ha='center', va='center', fontsize=10, transform=ax.transAxes)
+plt.text(1, 1.05, "vorne", ha='right', va='center', fontsize=10, transform=ax.transAxes)
+
+# Achsenbeschriftungen und Ticks ausblenden
+ax.axis('off')
+
+# Grenzen des Plots festlegen
+ax.set_xlim(0, 12.0)
+ax.set_ylim(0, 1)
+
+# Anzeige des Diagramms
+plt.tight_layout()
+plt.show()
