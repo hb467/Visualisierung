@@ -1,87 +1,41 @@
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 import numpy as np
 
-# Fehlerart-Symbole
-fehler_marker = {
-    "Blase": "o",           # Kreis
-    "Beule": "+",           # Plus
-    "Delle": "^",           # Dreieck oben
-    "Schaumaustritt": ">",  # Dreieck rechts
-    "Hotmeltaustritt": "s", # Quadrat
-    "Klebeaustritt": "D",   # Raute
-    "Saugerabdruck": "P",   # Fünfeck
-    "Lackiermangel": "x",   # Kreuz
-    "Knick": "_"            # Horizontale Linie
-}
-
-# Fehlerpunkte-Daten
-fehlerpunkte = [
-    {"Feld": "F10", "Position": "oben", "Fehlerart": "Delle"},
-]
-
-# Mapping für Y-Koordinaten
-position_y = {
-    "unten": 0.15,   
-    "mittig": 0.5,   
-    "oben": 0.85     
-}
-
 # Erstelle den Plot
-fig = plt.figure(figsize=(10, 3))  # Figur erstellen
-ax = fig.add_subplot(111, facecolor='white')  # Achse hinzufügen
+fig, ax = plt.subplots(figsize=(10, 3))
 
-# Hintergrundlinien
+# Hintergrundlinien (12 Linien, 13 Felder)
 anzahl_hintergrundlinien = 12
-x_hintergrund = np.linspace(0, 12, anzahl_hintergrundlinien + 1)
+x_hintergrund = np.linspace(0, 12, anzahl_hintergrundlinien + 1)  # Positionen der Hintergrundlinien
 
 for x in x_hintergrund:
-    ax.axvline(x, color='lightgrey', linestyle='-', linewidth=1, zorder=1)
+    ax.axvline(x, ymin=0, ymax=1, color='lightgrey', linestyle='-', linewidth=1)
 
-# Linien-Rahmen hinzufügen
-rahmen = patches.Rectangle(
-    (0, 0), 12, 1,  # Startkoordinaten und Breite/Höhe des Rahmens
-    linewidth=2, edgecolor='gray', facecolor='none', zorder=10
-)
-ax.add_patch(rahmen)
+# Rahmen um das Diagramm
+ax.spines['top'].set_color('black')
+ax.spines['bottom'].set_color('black')
+ax.spines['left'].set_color('black')
+ax.spines['right'].set_color('black')
 
-# Beschriftungen unter jedem Feld
-feldnamen = [f"F{i}" for i in range(12, 0, -1)]
-x_positionen = np.linspace(0.5, 11.5, 12)
+# Beschriftungen unter jedem Feld hinzufügen
+feldnamen = [f"F{i}" for i in range(12, 0, -1)]  # F12 bis F1
+x_felder = np.linspace(0.5, 11.5, 12)  # Mittige Positionen der Felder
 
-for x, name in zip(x_positionen, feldnamen):
-    ax.text(x, -0.1, name, ha='center', va='center', fontsize=10, transform=ax.transData, zorder=2)
+for x, name in zip(x_felder, feldnamen):
+    plt.text(x, -0.1, name, ha='center', va='center', fontsize=10, transform=ax.transData)
 
 # Zusätzliche Beschriftungen oben
-plt.text(0, 1.05, "hinten", ha='left', va='center', fontsize=10, transform=ax.transAxes, zorder=2)
-plt.text(0.5, 1.05, "Fehlerposition Außendeckschicht", ha='center', va='center', fontsize=10, transform=ax.transAxes, zorder=2)
-plt.text(1, 1.05, "vorne", ha='right', va='center', fontsize=10, transform=ax.transAxes, zorder=2)
+plt.text(0, 1.05, "hinten", ha='left', va='center', fontsize=10, transform=ax.transAxes)
+plt.text(0.5, 1.05, "Fehlerposition Außendeckschicht", ha='center', va='center', fontsize=10, transform=ax.transAxes)
+plt.text(1, 1.05, "vorne", ha='right', va='center', fontsize=10, transform=ax.transAxes)
 
-# Y-Achse Beschriftungen
-ax.text(-0.05, 0.85, "oben", ha='center', va='center', fontsize=10, transform=ax.transAxes, zorder=2)
-ax.text(-0.05, 0.5, "mittig", ha='center', va='center', fontsize=10, transform=ax.transAxes, zorder=2)
-ax.text(-0.05, 0.15, "unten", ha='center', va='center', fontsize=10, transform=ax.transAxes, zorder=2)
-
-# Fehlerpunkte darstellen
-for fehler in fehlerpunkte:
-    feld_index = 12 - int(fehler["Feld"][1:])
-    x_pos = x_positionen[feld_index]
-    y_pos = position_y[fehler["Position"]]
-    marker = fehler_marker.get(fehler["Fehlerart"], "x")
-    ax.scatter(x_pos, y_pos, color="red", marker=marker, s=100, zorder=5)
-
-# Legende erstellen
-handles = [
-    plt.Line2D([0], [0], color='red', linestyle='None', marker=symbol, markersize=10, label=fehler)
-    for fehler, symbol in fehler_marker.items()
-]
-ax.legend(handles=handles, title="Fehlerarten", loc="upper center", bbox_to_anchor=(0.5, -0.2), ncol=5, frameon=False)
-
-# Achsen ausblenden und Plot-Grenzen festlegen
+# Achsenbeschriftungen und Ticks ausblenden
 ax.axis('off')
-ax.set_xlim(0, 12)
+
+# Grenzen des Plots festlegen
+ax.set_xlim(0, 12.0)
 ax.set_ylim(0, 1)
 
 # Anzeige des Diagramms
 plt.tight_layout()
-plt.show()
+plt.show()  
